@@ -1,8 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import {
+  ArrowLeft,
+  Calendar,
+  User,
+  Paperclip,
+  Download,
+  Edit3,
+  CheckCircle2,
+  Clock,
+  AlertCircle
+} from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import FileUpload from '../components/FileUpload';
 
 const TaskDetailPage = () => {
   const { id } = useParams();
@@ -11,6 +21,7 @@ const TaskDetailPage = () => {
   const [newStatus, setNewStatus] = useState('');
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef(null);
   const { user, isAdmin } = useAuth();
 
   useEffect(() => {
@@ -43,61 +54,90 @@ const TaskDetailPage = () => {
     }
   };
 
-  const handleFileSelect = (selectedFile) => {
-    setFile(selectedFile);
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    if (selected) setFile(selected);
+    // Allow re-selection of same file by resetting input
+    e.target.value = null;
   };
+
+  const clearFile = () => setFile(null);
 
   if (!task) return <div className="loading">Loading...</div>;
 
   const canUpdateStatus = isAdmin || task.assignedTo?._id === user._id;
 
+  // Get status icon
+  const StatusIcon = task.status === 'Completed' ? CheckCircle2
+    : task.status === 'In Progress' ? Clock
+    : AlertCircle;
+
   return (
     <div className="task-detail-page">
       <div className="detail-container">
+        {/* Back button */}
         <button className="btn-back" onClick={() => navigate('/tasks')}>
-          ← Back to Tasks
+          <ArrowLeft size={18} strokeWidth={2} style={{ marginRight: '4px' }} />
+          Back to Tasks
         </button>
 
+        {/* Main card */}
         <div className="detail-card">
           <div className="detail-header">
             <h2 className="task-title">{task.title}</h2>
             <div className="badge-group">
-              <span className={`badge priority-${task.priority.toLowerCase()}`}>{task.priority}</span>
-              <span className={`badge status-${task.status.toLowerCase().replace(' ', '-')}`}>{task.status}</span>
+              <span className={`badge priority-${task.priority.toLowerCase()}`}>
+                {task.priority}
+              </span>
+              <span className={`badge status-${task.status.toLowerCase().replace(' ', '-')}`}>
+                <StatusIcon size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                {task.status}
+              </span>
             </div>
           </div>
 
+          {/* Meta information */}
           <div className="detail-meta">
             <div className="meta-item">
+              <User size={16} strokeWidth={2} style={{ color: 'var(--muted)', marginRight: '6px' }} />
               <span className="meta-label">Assigned to</span>
               <span className="meta-value">{task.assignedTo?.name || 'Unassigned'}</span>
             </div>
             <div className="meta-item">
+              <Calendar size={16} strokeWidth={2} style={{ color: 'var(--muted)', marginRight: '6px' }} />
               <span className="meta-label">Due Date</span>
               <span className="meta-value">
                 {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'N/A'}
               </span>
             </div>
             <div className="meta-item">
+              <Clock size={16} strokeWidth={2} style={{ color: 'var(--muted)', marginRight: '6px' }} />
               <span className="meta-label">Created</span>
               <span className="meta-value">{new Date(task.createdAt).toLocaleString()}</span>
             </div>
           </div>
 
+          {/* Description */}
           <div className="detail-description">
             <h3 className="section-title">Description</h3>
             <p>{task.description || 'No description provided.'}</p>
           </div>
         </div>
 
+        {/* Attachment card */}
         <div className="detail-card">
-          <h3 className="section-title">Attachment</h3>
+          <h3 className="section-title">
+            <Paperclip size={16} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Attachment
+          </h3>
           {task.attachment ? (
             <div className="attachment-current">
               <div className="file-info">
-                <span className="file-icon">📎</span>
+                <Paperclip size={18} style={{ color: 'var(--muted)' }} />
                 <span className="file-name">{task.attachment.originalName}</span>
-                <span className="file-size">({(task.attachment.size / 1024).toFixed(1)} KB)</span>
+                <span className="file-size">
+                  ({(task.attachment.size / 1024).toFixed(1)} KB)
+                </span>
               </div>
               <a
                 href={`/uploads/${task.attachment.filename}`}
@@ -105,6 +145,7 @@ const TaskDetailPage = () => {
                 rel="noreferrer"
                 className="btn btn-download"
               >
+                <Download size={16} style={{ marginRight: '4px' }} />
                 Download
               </a>
             </div>
@@ -113,6 +154,7 @@ const TaskDetailPage = () => {
           )}
         </div>
 
+        {/* Status update panel (only if user can update) */}
         {canUpdateStatus && (
           <div className="detail-card update-panel">
             <h3 className="section-title">Update Task</h3>
@@ -131,9 +173,38 @@ const TaskDetailPage = () => {
                 </select>
               </div>
 
+              {/* Minimal file attachment area */}
               <div className="form-group">
-                <label>New Attachment (optional)</label>
-                <FileUpload onFileSelect={handleFileSelect} currentFile={null} />
+                <label>Attach File</label>
+                <div className="file-attach-row">
+                  <button
+                    type="button"
+                    className="btn btn-icon"
+                    onClick={() => fileInputRef.current?.click()}
+                    title="Attach file"
+                  >
+                    <Paperclip size={18} />
+                  </button>
+                  <span className="selected-file">
+                    {file ? file.name : 'No file chosen'}
+                  </span>
+                  {file && (
+                    <button
+                      type="button"
+                      className="btn btn-icon btn-icon-clear"
+                      onClick={clearFile}
+                      title="Remove file"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
               </div>
 
               <button
@@ -147,13 +218,15 @@ const TaskDetailPage = () => {
           </div>
         )}
 
+        {/* Admin full edit link */}
         {isAdmin && (
           <div className="admin-actions">
             <button
               className="btn btn-edit"
               onClick={() => navigate(`/tasks/${id}/edit`)}
             >
-              ⚙️ Full Edit (Admin)
+              <Edit3 size={16} style={{ marginRight: '6px' }} />
+              Full Edit (Admin)
             </button>
           </div>
         )}

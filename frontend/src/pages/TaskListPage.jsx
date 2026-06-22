@@ -10,12 +10,23 @@ const TaskListPage = () => {
   const { isAdmin } = useAuth();
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      const res = await api.get('/tasks');
-      setTasks(res.data);
-    };
     fetchTasks();
   }, []);
+
+  const fetchTasks = async () => {
+    const res = await api.get('/tasks');
+    setTasks(res.data);
+  };
+
+  const handleDelete = async (taskId) => {
+    if (!window.confirm('Delete this task?')) return;
+    try {
+      await api.delete(`/tasks/${taskId}`);
+      setTasks(prev => prev.filter(t => t._id !== taskId));
+    } catch (err) {
+      alert(err.response?.data?.message || 'Delete failed');
+    }
+  };
 
   return (
     <>
@@ -36,7 +47,9 @@ const TaskListPage = () => {
         />
       ) : (
         <div className="tasks-grid">
-          {tasks.map(task => <TaskCard key={task._id} task={task} />)}
+          {tasks.map(task => (
+            <TaskCard key={task._id} task={task} isAdmin={isAdmin} onDelete={handleDelete} />
+          ))}
         </div>
       )}
     </>
