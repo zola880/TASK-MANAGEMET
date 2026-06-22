@@ -1,5 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import {
+  LayoutDashboard,
+  ClipboardList,
+  PlusSquare,
+  Users,
+  LogOut
+} from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout, isAdmin } = useAuth();
@@ -19,23 +26,29 @@ const Sidebar = ({ isOpen, onClose }) => {
       {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <NavLink to="/dashboard" className="sidebar-logo" onClick={onClose}>TaskFlow</NavLink>
+          <NavLink to="/dashboard" className="sidebar-logo" onClick={onClose}>
+            TaskFlow
+          </NavLink>
         </div>
 
         <nav className="sidebar-nav">
           <NavLink to="/dashboard" className={linkClass} onClick={onClose}>
-            <span>📊</span> Dashboard
+            <LayoutDashboard size={18} strokeWidth={2} />
+            Dashboard
           </NavLink>
           <NavLink to="/tasks" className={linkClass} onClick={onClose}>
-            <span>📋</span> My Tasks
+            <ClipboardList size={18} strokeWidth={2} />
+            My Tasks
           </NavLink>
           {isAdmin && (
             <>
               <NavLink to="/tasks/new" className={linkClass} onClick={onClose}>
-                <span>➕</span> Create Task
+                <PlusSquare size={18} strokeWidth={2} />
+                Create Task
               </NavLink>
               <NavLink to="/users" className={linkClass} onClick={onClose}>
-                <span>👥</span> Team
+                <Users size={18} strokeWidth={2} />
+                Team
               </NavLink>
             </>
           )}
@@ -47,6 +60,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <span className="user-role">{user?.role}</span>
           </div>
           <button className="btn-logout" onClick={handleLogout}>
+            <LogOut size={16} strokeWidth={2} style={{ marginRight: '6px' }} />
             Sign out
           </button>
         </div>

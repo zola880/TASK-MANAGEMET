@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { FileText, Calendar } from 'lucide-react';
 
 const RecentTasks = ({ tasks }) => {
   const navigate = useNavigate();
@@ -8,14 +9,16 @@ const RecentTasks = ({ tasks }) => {
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 5);
 
-  const statusClass = (status) => 
+  const statusClass = (status) =>
     `badge status-${status.toLowerCase().replace(' ', '-')}`;
 
   if (tasks.length === 0) {
     return (
       <div className="recent-tasks-card empty">
         <div className="empty-state">
-          <div className="empty-icon">📝</div>
+          <div className="empty-icon">
+            <FileText size={48} strokeWidth={1.5} color="var(--muted)" />
+          </div>
           <h3>No recent tasks found</h3>
           <p>Create your first task to get started.</p>
           <button className="btn btn-primary" onClick={() => navigate('/tasks')}>
@@ -31,7 +34,7 @@ const RecentTasks = ({ tasks }) => {
       <div className="recent-header">
         <div>
           <h3 className="recent-title">Recent Tasks</h3>
-          <p className="recent-subtitle">Keep track of your latest assigned work</p>
+          
         </div>
         <button className="btn btn-secondary btn-sm" onClick={() => navigate('/tasks')}>
           View All Tasks →
@@ -49,7 +52,8 @@ const RecentTasks = ({ tasks }) => {
                 </span>
                 {task.dueDate && (
                   <span className="due-date">
-                    📅 {new Date(task.dueDate).toLocaleDateString()}
+                    <Calendar size={14} strokeWidth={2} style={{ marginRight: '4px' }} />
+                    {new Date(task.dueDate).toLocaleDateString()}
                   </span>
                 )}
               </div>

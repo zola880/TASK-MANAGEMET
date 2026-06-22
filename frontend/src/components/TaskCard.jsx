@@ -1,29 +1,40 @@
 import { Link } from 'react-router-dom';
+import { Calendar } from 'lucide-react';
 
 const TaskCard = ({ task }) => {
+  // Use priority as the card's background color
   const priorityClass = `priority-${task.priority.toLowerCase()}`;
   const statusClass = `status-${task.status.toLowerCase().replace(' ', '-')}`;
 
+  // Format due date
+  const formatDate = (dateStr) => {
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
   return (
-    <div className="task-card">
-      <div className="task-card-header">
-        <h3 className="task-card-title">{task.title}</h3>
-        <span className={`badge ${priorityClass}`}>{task.priority}</span>
-      </div>
-      <p className="task-card-desc">{task.description || 'No description'}</p>
-      <div className="task-card-meta">
-        {task.assignedTo && (
-          <span className="meta-item">👤 {task.assignedTo.name}</span>
-        )}
+    <Link
+      to={`/tasks/${task._id}`}
+      className={`task-card task-card-colored ${priorityClass}`}
+    >
+      {/* Small priority label at top */}
+      <span className="task-card-priority-label">{task.priority}</span>
+
+      {/* Task title – centered, large */}
+      <h3 className="task-card-title-centered">{task.title}</h3>
+
+      {/* Bottom row: due date and status */}
+      <div className="task-card-bottom">
         {task.dueDate && (
-          <span className="meta-item">📅 {new Date(task.dueDate).toLocaleDateString()}</span>
+          <span className="task-card-due">
+            <Calendar size={12} strokeWidth={2} />
+            {formatDate(task.dueDate)}
+          </span>
         )}
-        <span className={`badge ${statusClass}`}>{task.status}</span>
+        <span className={`status-badge ${statusClass}`}>{task.status}</span>
       </div>
-      <div className="task-card-footer">
-        <Link to={`/tasks/${task._id}`} className="btn-view">View Details →</Link>
-      </div>
-    </div>
+    </Link>
   );
 };
 

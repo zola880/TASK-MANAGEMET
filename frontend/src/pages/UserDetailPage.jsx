@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  ListTodo,
+  Timer,
+  CheckCircle2
+} from 'lucide-react';
 import api from '../services/api';
 import PageHeader from '../components/PageHeader';
 import TaskCard from '../components/TaskCard';
@@ -56,28 +62,36 @@ const UserDetailPage = () => {
 
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon">📋</div>
+          <div className="stat-icon">
+            <LayoutDashboard size={24} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">Total Tasks</div>
             <div className="stat-value">{stats.total}</div>
           </div>
         </div>
         <div className="stat-card stat-todo">
-          <div className="stat-icon">📌</div>
+          <div className="stat-icon">
+            <ListTodo size={24} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">To Do</div>
             <div className="stat-value">{stats.todo}</div>
           </div>
         </div>
         <div className="stat-card stat-inprogress">
-          <div className="stat-icon">🔄</div>
+          <div className="stat-icon">
+            <Timer size={24} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">In Progress</div>
             <div className="stat-value">{stats.inProgress}</div>
           </div>
         </div>
         <div className="stat-card stat-completed">
-          <div className="stat-icon">✅</div>
+          <div className="stat-icon">
+            <CheckCircle2 size={24} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">Completed</div>
             <div className="stat-value">{stats.completed}</div>

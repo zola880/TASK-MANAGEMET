@@ -1,30 +1,37 @@
 /* ========== Global & Variables ========== */
 :root {
-  --primary: #C65D3A;
-  --primary-hover: #B14F2F;
-  --primary-active: #984126;
-  --accent: #E8B04B;
-  --accent-hover: #D89B2D;
-  --bg: #F8F4EE;
+  --primary: #A16207;
+  --primary-hover: #854D0E;
+  --primary-active: #713F12;          /* slightly darker for pressed states */
+  --primary-light: #FBBF24;
+
+  --secondary: #44403C;
+
+  --bg: #F8F6F2;
   --surface: #FFFFFF;
-  --text: #1E293B;
-  --secondary: #64748B;
-  --muted: #94A3B8;
-  --border: #E7DED2;
-  --border-light: #EFE8DE;
-  --success: #2E7D32;
-  --warning: #F59E0B;
+
+  --text: #1C1917;
+  --muted: #78716C;
+
+  --border: #E7E5E4;
+  --divider: #E7E5E4;
+
+  --success: #15803D;
+  --warning: #D97706;
   --danger: #DC2626;
+
+  /* Priority & status badge colors – kept consistent with new palette */
   --high-bg: #FEE2E2;
-  --high-text: #DC2626;
+  --high-text: #B91C1C;
   --medium-bg: #FEF3C7;
-  --medium-text: #D97706;
+  --medium-text: #92400E;
   --low-bg: #DCFCE7;
-  --low-text: #15803D;
+  --low-text: #065F46;
+
   --radius-card: 16px;
   --radius-sm: 8px;
-  --shadow-card: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
-  --shadow-hover: 0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.08);
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-hover: 0 12px 30px rgba(0,0,0,0.08);
   --sidebar-width: 260px;
 }
 
@@ -75,7 +82,7 @@ body {
   left: 0;
   width: var(--sidebar-width);
   height: 100vh;
-  background: var(--surface);
+  background: #F1F5F9;                 /* kept subtle gray for contrast */
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -104,7 +111,7 @@ body {
 }
 .sidebar-header {
   padding: 1.5rem 1.5rem 1rem;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--divider);
 }
 .sidebar-logo {
   font-size: 1.5rem;
@@ -132,7 +139,7 @@ body {
   position: relative;
 }
 .sidebar-link:hover {
-  background: #F5F0E8;
+  background: #E2E8F0;
   color: var(--text);
 }
 .sidebar-link.active {
@@ -148,11 +155,11 @@ body {
   width: 4px;
   height: 24px;
   border-radius: 4px;
-  background: var(--accent);
+  background: var(--primary-light);
 }
 .sidebar-footer {
   padding: 1.5rem 1.5rem;
-  border-top: 1px solid var(--border-light);
+  border-top: 1px solid var(--divider);
 }
 .user-info {
   margin-bottom: 0.8rem;
@@ -160,10 +167,11 @@ body {
 .user-name {
   font-weight: 600;
   font-size: 0.95rem;
+  color: var(--text);
 }
 .user-role {
   font-size: 0.8rem;
-  color: var(--secondary);
+  color: var(--muted);
   text-transform: capitalize;
   display: block;
 }
@@ -171,7 +179,7 @@ body {
   width: 100%;
   padding: 0.5rem;
   background: transparent;
-  color: var(--secondary);
+  color: var(--muted);
   border: 1px solid var(--border);
   border-radius: 8px;
   font-weight: 500;
@@ -194,6 +202,7 @@ body {
   margin-right: auto;
   margin-left: calc(var(--sidebar-width) + 0px);
   width: calc(100% - var(--sidebar-width));
+  background: var(--surface);            /* white dashboard area */
 }
 @media (max-width: 768px) {
   .main-content {
@@ -202,6 +211,7 @@ body {
     padding-top: 4rem;
     max-width: 100%;
     width: 100%;
+    background: var(--surface);
   }
 }
 
@@ -220,7 +230,7 @@ body {
   color: var(--text);
 }
 .page-header-left p {
-  color: var(--secondary);
+  color: var(--muted);
   font-size: 1rem;
   margin-top: 0.25rem;
 }
@@ -255,7 +265,7 @@ body {
 }
 .stat-content .stat-label {
   font-size: 0.85rem;
-  color: var(--secondary);
+  color: var(--muted);
   font-weight: 500;
 }
 .stat-content .stat-value {
@@ -263,111 +273,106 @@ body {
   font-weight: 700;
   color: var(--text);
 }
-.stat-todo .stat-icon { color: var(--accent); }
+.stat-todo .stat-icon { color: var(--warning); }
 .stat-inprogress .stat-icon { color: var(--primary); }
 .stat-completed .stat-icon { color: var(--success); }
 
 /* ========== Task Grid ========== */
 .tasks-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));  /* smaller cards */
+  gap: 16px;
   margin-top: 1rem;
 }
 
-/* ========== Task Card ========== */
+/* ========== Compact Colored Task Card ========== */
 .task-card {
   background: var(--surface);
   border-radius: var(--radius-card);
   border: 1px solid var(--border);
-  padding: 1.5rem;
+  padding: 16px;
   box-shadow: var(--shadow-card);
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  justify-content: space-between;
+  height: 140px;                /* fixed compact height */
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;        /* for link */
+  color: inherit;              /* inherit text color */
 }
+
 .task-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
-.task-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+
+/* Priority background colors – applied via JS */
+.task-card-colored.priority-high {
+  background: var(--high-bg);
+  color: var(--high-text);
 }
-.task-card-title {
-  font-size: 1.1rem;
+.task-card-colored.priority-medium {
+  background: var(--medium-bg);
+  color: var(--medium-text);
+}
+.task-card-colored.priority-low {
+  background: var(--low-bg);
+  color: var(--low-text);
+}
+
+/* Small priority label at top */
+.task-card-priority-label {
+  font-size: 10px;
   font-weight: 600;
-  color: var(--text);
+  text-transform: uppercase;
+  opacity: 0.8;
+  align-self: flex-start;
+}
+
+/* Centered title */
+.task-card-title-centered {
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  margin: auto 0;
   line-height: 1.3;
   word-break: break-word;
-}
-.task-card-desc {
-  color: var(--secondary);
-  font-size: 0.9rem;
-  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  flex: 1;
 }
-.task-card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: center;
-  font-size: 0.8rem;
-  color: var(--secondary);
-}
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-.task-card-footer {
+
+/* Bottom row */
+.task-card-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--border-light);
-}
-.btn-view {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
-  font-weight: 500;
-  text-decoration: none;
-  font-size: 0.85rem;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-.btn-view:hover {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: white;
+  font-size: 0.75rem;
+  opacity: 0.9;
 }
 
-/* ========== Priority & Status Badges ========== */
-.badge {
-  padding: 0.2rem 0.6rem;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+.task-card-due {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.priority-high { background: var(--high-bg); color: var(--high-text); }
-.priority-medium { background: var(--medium-bg); color: var(--medium-text); }
-.priority-low { background: var(--low-bg); color: var(--low-text); }
-.status-to-do { background: #FEF3C7; color: #B45309; }
+
+/* Status badge – kept compact */
+.status-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.status-to-do { background: #FEF3C7; color: #92400E; }
 .status-in-progress { background: #FDE68A; color: #92400E; }
-.status-completed { background: #DCFCE7; color: #166534; }
+.status-completed { background: #DCFCE7; color: #065F46; }
+
+/* Remove old task‑card styles – they are no longer used but keep if not conflicting */
+/* (The old .task-card-header, .task-card-title, .priority-badge, etc. are now unused – it's safe to leave them, but we won't use them) */
 
 /* ========== Recent Tasks Card ========== */
 .recent-tasks-card {
@@ -392,7 +397,7 @@ body {
   color: var(--text);
 }
 .recent-subtitle {
-  color: var(--secondary);
+  color: var(--muted);
   font-size: 0.9rem;
   margin-top: 0.25rem;
 }
@@ -406,7 +411,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--divider);
   gap: 1rem;
   flex-wrap: wrap;
 }
@@ -430,7 +435,7 @@ body {
   align-items: center;
   gap: 0.75rem;
   font-size: 0.8rem;
-  color: var(--secondary);
+  color: var(--muted);
   flex-wrap: wrap;
 }
 .due-date {
@@ -454,7 +459,7 @@ body {
   color: var(--text);
 }
 .empty-state p {
-  color: var(--secondary);
+  color: var(--muted);
   margin-bottom: 1.5rem;
 }
 
@@ -479,6 +484,7 @@ body {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
+  color: var(--text);
 }
 .auth-form input, .auth-form select, .auth-form textarea {
   width: 100%;
@@ -546,6 +552,7 @@ body {
 .task-title {
   font-size: 2rem;
   font-weight: 700;
+  color: var(--text);
 }
 .badge-group {
   display: flex;
@@ -556,18 +563,18 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1.5rem;
   padding-bottom: 1.8rem;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--divider);
   margin-bottom: 1.5rem;
 }
-.meta-label { font-size: 0.75rem; text-transform: uppercase; color: var(--secondary); font-weight: 600; }
-.meta-value { font-weight: 500; }
-.section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.8rem; }
-.detail-description p { color: var(--secondary); line-height: 1.7; }
+.meta-label { font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.meta-value { font-weight: 500; color: var(--text); }
+.section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.8rem; color: var(--text); }
+.detail-description p { color: var(--muted); line-height: 1.7; }
 .attachment-current {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f9fafb;
+  background: var(--bg);
   padding: 1rem;
   border-radius: 12px;
   margin-top: 0.5rem;
@@ -580,13 +587,14 @@ body {
   text-decoration: none;
   font-size: 0.9rem;
 }
+.btn-download:hover { background: var(--primary-hover); }
 .update-panel {
   border-left: 4px solid var(--primary);
 }
 .update-form .form-group {
   margin-bottom: 1.5rem;
 }
-.update-form label { font-weight: 600; display: block; margin-bottom: 0.5rem; }
+.update-form label { font-weight: 600; display: block; margin-bottom: 0.5rem; color: var(--text); }
 .update-form select, .update-form input[type="file"] {
   width: 100%;
   padding: 0.7rem;
@@ -620,10 +628,10 @@ body {
   border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
 }
-.form-header h2 { font-size: 1.8rem; margin-bottom: 0.3rem; }
-.form-subtitle { color: var(--secondary); margin-bottom: 2rem; }
+.form-header h2 { font-size: 1.8rem; margin-bottom: 0.3rem; color: var(--text); }
+.form-subtitle { color: var(--muted); margin-bottom: 2rem; }
 .form-group { margin-bottom: 1.5rem; }
-.form-group label { font-weight: 600; display: block; margin-bottom: 0.5rem; }
+.form-group label { font-weight: 600; display: block; margin-bottom: 0.5rem; color: var(--text); }
 .form-group input, .form-group select, .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -634,7 +642,7 @@ body {
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(198,93,58,0.1);
+  box-shadow: 0 0 0 3px rgba(161, 98, 7, 0.2);
 }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
@@ -645,7 +653,7 @@ body {
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--border-light);
+  border-top: 1px solid var(--divider);
 }
 
 /* ========== Buttons ========== */
@@ -669,18 +677,16 @@ body {
   border: 1px solid var(--border);
   color: var(--text);
 }
-.btn-secondary:hover { background: #f5f0e8; }
+.btn-secondary:hover { background: #F1F5F9; }
 .btn-danger { background: var(--danger); color: white; }
-.btn-danger:hover { background: #b91c1c; }
+.btn-danger:hover { background: #B91C1C; }
 .btn-sm { padding: 0.35rem 0.9rem; font-size: 0.85rem; }
 
 .loading {
   text-align: center;
   padding: 4rem;
-  color: var(--secondary);
+  color: var(--muted);
 }
-
-
 
 /* ========== Section Title (for user detail page) ========== */
 .section-title {
@@ -697,11 +703,12 @@ body {
   transform: translateY(-3px);
   box-shadow: var(--shadow-hover);
 }
+
 /* File upload widget */
 .file-upload-wrapper { position: relative; }
 .file-upload-label {
   display: flex; align-items: center; gap: 1rem;
-  background: #f9fafb; border: 2px dashed var(--border);
+  background: var(--bg); border: 2px dashed var(--border);
   border-radius: 8px; padding: 0.75rem 1rem; cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -713,6 +720,76 @@ body {
 .file-upload-input { display: none; }
 .file-upload-clear {
   position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-  background: none; border: none; color: var(--secondary); font-size: 1.2rem; cursor: pointer;
+  background: none; border: none; color: var(--muted); font-size: 1.2rem; cursor: pointer;
 }
 .file-hint { margin-top: 0.4rem; font-size: 0.8rem; color: var(--muted); }
+
+/* ========== User List (Team page) ========== */
+.user-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--divider);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.user-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.15s ease;
+}
+
+.user-list-item:hover {
+  background: #F8F6F2;
+}
+
+.user-list-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.user-list-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-list-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.user-list-email {
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-list-role {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}

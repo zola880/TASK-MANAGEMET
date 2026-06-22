@@ -14,32 +14,46 @@ const UsersPage = () => {
     fetchUsers();
   }, []);
 
+  const getInitials = (name) => {
+    if (!name) return '?';
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
   return (
     <div>
       <PageHeader title="Team" subtitle="All registered members" />
+
       {users.length === 0 ? (
-        <p className="empty-state">No users found.</p>
+        <div className="empty-state">
+          <div className="empty-icon">👥</div>
+          <h3>No team members yet</h3>
+          <p>Registered members will appear here.</p>
+        </div>
       ) : (
-        <div className="tasks-grid">
+        <div className="user-list-container">
           {users.map(u => (
             <Link
-              to={`/users/${u._id}`}          // 👈 this creates a link to the detail page
+              to={`/users/${u._id}`}
               key={u._id}
-              className="task-card user-card-link"
-              style={{ textDecoration: 'none', color: 'inherit' }}
+              className="user-list-item"
             >
-              <div className="task-card-header">
-                <h3 className="task-card-title">{u.name}</h3>
-                <span className={`badge ${u.role === 'admin' ? 'priority-high' : 'status-completed'}`}>
-                  {u.role}
-                </span>
+              <div className="user-list-avatar">
+                {getInitials(u.name)}
               </div>
-              <div className="task-card-meta">
-                <span className="meta-item">📧 {u.email}</span>
+
+              <div className="user-list-info">
+                <span className="user-list-name">{u.name}</span>
+                <span className="user-list-email">{u.email}</span>
               </div>
-              <div className="task-card-footer">
-                <span className="btn-view">View Profile →</span>
-              </div>
+
+              <span className={`badge user-list-role ${u.role === 'admin' ? 'priority-high' : 'status-completed'}`}>
+                {u.role}
+              </span>
             </Link>
           ))}
         </div>
