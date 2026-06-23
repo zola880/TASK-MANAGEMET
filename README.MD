@@ -1,64 +1,66 @@
-# Task Management System
+# TaskFlow – Team Task Management System
 
-A full-stack Task Management System built with React, Node.js, Express, and MongoDB. The application enables teams to organize work efficiently through role-based access control, task assignment, progress tracking, file attachments, and dashboard analytics.
+TaskFlow is a full-stack task management platform built with React (Vite), Node.js/Express, and MongoDB. The application enables teams to organize work, assign tasks, track progress, manage deadlines, and collaborate efficiently through a secure role-based system.
 
----
-
-## Features
-
-### Authentication & Authorization
-
-* User registration and login
-* JWT-based authentication
-* Password hashing with bcryptjs
-* Role-based access control (Admin and Team Member)
-
-### Task Management
-
-* Create, read, update, and delete tasks
-* Assign tasks to team members
-* Track task progress and status
-* Set priorities and due dates
-* Upload and download task attachments
-
-### Dashboard
-
-* Overview of task statistics
-* Task status summaries
-* Upcoming deadline notifications
-* Team performance insights
-
-### Team Management
-
-* View all registered team members
-* Monitor assigned tasks
-* Track individual task completion statistics
+The platform supports task creation, assignment, status tracking, file attachments, dashboard analytics, and user management. It is designed with a responsive interface that provides a seamless experience across desktop, tablet, and mobile devices.
 
 ---
 
 ## Technology Stack
 
-### Frontend
+| Layer    | Technology                                           |
+| -------- | ---------------------------------------------------- |
+| Frontend | React 18, Vite, React Router v6, Axios, Lucide Icons |
+| Backend  | Node.js, Express, Mongoose, JWT, bcryptjs, Multer    |
+| Database | MongoDB Atlas                                        |
+| Storage  | Local File System (Development), MongoDB Metadata    |
 
-* React 18
-* Vite
-* React Router DOM
-* Axios
-* Context API
-* Lucide React Icons
+---
 
-### Backend
+## Features
 
-* Node.js
-* Express.js
-* JWT Authentication
-* Multer
-* bcryptjs
+### Authentication
 
-### Database
+* JWT-based user registration and login
+* Secure password hashing using bcryptjs
+* Protected routes and API endpoints
 
-* MongoDB Atlas
-* Mongoose ODM
+### Role-Based Access Control
+
+* Admin users can create, assign, edit, and delete tasks
+* Team Members can view and update their assigned tasks
+* Access restrictions enforced on both frontend and backend
+
+### Task Management
+
+* Create, read, update, and delete tasks
+* Assign tasks to team members
+* Set task priority, status, and due dates
+* Track task progress in real time
+
+### File Attachments
+
+* Upload files when creating or updating tasks
+* Download attached files directly from task details
+* Supports documents, PDFs, and image files
+
+### Dashboard
+
+* Displays task statistics and summaries
+* Highlights tasks approaching their deadlines
+* Provides quick insight into team productivity
+
+### Team Directory
+
+* View all registered users
+* Access user-specific task statistics
+* Monitor assigned and completed work
+
+### User Interface
+
+* Responsive layout for desktop, tablet, and mobile devices
+* Professional sidebar navigation and dashboard design
+* Clean typography and intuitive user experience
 
 ---
 
@@ -66,17 +68,29 @@ A full-stack Task Management System built with React, Node.js, Express, and Mong
 
 ```text
 TASK-MANAGEMET/
-│
 ├── backend/
 │   ├── config/
+│   │   └── db.js
 │   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── taskController.js
+│   │   └── userController.js
 │   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   ├── roleMiddleware.js
+│   │   └── upload.js
 │   ├── models/
+│   │   ├── Task.js
+│   │   └── User.js
 │   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── taskRoutes.js
+│   │   └── userRoutes.js
 │   ├── utils/
+│   │   └── generateToken.js
 │   ├── uploads/
-│   ├── .env
 │   ├── server.js
+│   ├── .env
 │   └── package.json
 │
 ├── frontend/
@@ -87,7 +101,8 @@ TASK-MANAGEMET/
 │   │   ├── pages/
 │   │   ├── services/
 │   │   ├── App.jsx
-│   │   └── App.css
+│   │   ├── App.css
+│   │   └── main.jsx
 │   ├── .env
 │   ├── vite.config.js
 │   └── package.json
@@ -99,11 +114,12 @@ TASK-MANAGEMET/
 
 ## Prerequisites
 
-Before running the project, ensure you have:
+Before running the application, ensure the following software is installed:
 
-* Node.js (v18 or later)
-* npm or yarn
+* Node.js v18 or higher
+* npm (included with Node.js) or yarn
 * MongoDB Atlas account or local MongoDB installation
+* Git
 
 ---
 
@@ -134,184 +150,189 @@ npm install
 
 ## Environment Variables
 
-### Backend Environment Variables
+### Backend Configuration
 
-Create a `.env` file inside the `backend` directory.
+Create a `.env` file inside the `backend` folder and add the following variables:
 
-```env
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/taskflow?retryWrites=true&w=majority
+JWT_SECRET=your-secret-key-change-this
 UPLOAD_PATH=uploads
-PORT=5000
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:3000
 ```
 
-#### Variable Description
+| Variable     | Description                                         |
+| ------------ | --------------------------------------------------- |
+| MONGO_URI    | MongoDB connection string (Atlas or local instance) |
+| JWT_SECRET   | Secret key used to sign JSON Web Tokens             |
+| UPLOAD_PATH  | Directory used to store uploaded files              |
+| FRONTEND_URL | Frontend origin for CORS configuration              |
 
-| Variable     | Description                     |
-| ------------ | ------------------------------- |
-| MONGO_URI    | MongoDB connection string       |
-| JWT_SECRET   | Secret key used for JWT signing |
-| UPLOAD_PATH  | Directory for uploaded files    |
-| PORT         | Backend server port             |
-| FRONTEND_URL | Frontend application URL        |
+### Frontend Configuration
 
----
-
-### Frontend Environment Variables
-
-Create a `.env` file inside the `frontend` directory.
+Create a `.env` file inside the `frontend` folder and add:
 
 ```env
 VITE_API_URL=/api
 ```
 
-For production deployment:
+Development:
 
 ```env
-VITE_API_URL=https://your-backend-domain.com/api
+VITE_API_URL=/api
+```
+
+Production Example:
+
+```env
+VITE_API_URL=https://your-backend-url.onrender.com/api
 ```
 
 ---
 
-## Running the Application
+## Setup and Execution Steps
 
-### Start Backend Server
+### Step 1: Start the Backend Server
 
-```bash
+Open a terminal and run:
+
+
 cd backend
 npm run dev
-```
 
-Backend runs on:
+Alternatively:
 
-```text
+nodemon server.js
+
+
+The backend server will start on:
+
+
 http://localhost:5000
-```
 
-### Start Frontend Server
 
-Open another terminal:
+A successful connection will display a MongoDB connection message in the terminal.
 
-```bash
+### Step 2: Start the Frontend Server
+
+Open a new terminal window and run:
+
 cd frontend
 npm run dev
-```
 
-Frontend runs on:
 
-```text
-http://localhost:5173
-```
+The frontend application will start on:
+
+
+http://localhost:3000
+
+
+The Vite proxy automatically forwards API requests to the backend server.
+
+### Step 3: Access the Application
+
+Open your browser and navigate to:
+
+
+http://localhost:3000
+
+
+Register a new account and log in to begin using the application.
 
 ---
 
-## Default Workflow
+## Usage
 
-### Team Member
+### User Roles
 
-* Register an account
-* Log in
-* View assigned tasks
-* Update task status
-* Upload attachments
-* Track task progress
+#### Admin
 
-### Admin
+Admins can:
 
 * Create tasks
 * Assign tasks to team members
-* Edit and delete tasks
+* Update any task
+* Delete any task
 * View all users
+* Access user statistics
 * Monitor team performance
-* Access dashboard statistics
+
+#### Team Member
+
+Team Members can:
+
+* View assigned tasks
+* Update task status
+* Upload task attachments
+* Track personal progress
 
 ---
 
-## API Overview
+### Task Management
 
-### Authentication
+#### Create Tasks
 
-| Method | Endpoint           | Description         |
-| ------ | ------------------ | ------------------- |
-| POST   | /api/auth/register | Register a new user |
-| POST   | /api/auth/login    | User login          |
+Administrators can create tasks by:
 
-### Tasks
+1. Selecting **Create Task**
+2. Entering task information
+3. Assigning a user
+4. Setting priority and due date
+5. Uploading optional attachments
 
-| Method | Endpoint       | Description      |
-| ------ | -------------- | ---------------- |
-| GET    | /api/tasks     | Get tasks        |
-| POST   | /api/tasks     | Create task      |
-| GET    | /api/tasks/:id | Get task details |
-| PUT    | /api/tasks/:id | Update task      |
-| DELETE | /api/tasks/:id | Delete task      |
+#### View Tasks
 
-### Users
+Tasks are displayed in the task list and dashboard views with status and priority indicators.
 
-| Method | Endpoint       | Description      |
-| ------ | -------------- | ---------------- |
-| GET    | /api/users     | Get all users    |
-| GET    | /api/users/:id | Get user details |
+#### Update Tasks
 
----
+Users can:
 
-# Design Summary
+* Change task status
+* Modify task details (Admin)
+* Upload new attachments
 
-## Architecture Decisions
+#### Delete Tasks
 
-### MERN Stack Architecture
-
-The application follows a MERN architecture consisting of MongoDB, Express.js, React, and Node.js. This approach allows development using JavaScript across the entire stack, improving maintainability and development speed.
-
-### RESTful API Design
-
-The backend exposes RESTful endpoints for authentication, user management, and task operations. This separation ensures a clean architecture and allows independent frontend and backend development.
-
-### JWT Authentication
-
-JWT was chosen to provide secure, stateless authentication. Protected routes require valid tokens, reducing server-side session management complexity.
-
-### MongoDB Database
-
-MongoDB was selected because task and user data fit naturally into a document-based structure, allowing flexible schema evolution.
-
-### React Context API
-
-Authentication and user information are managed globally using React Context API, reducing unnecessary prop drilling.
-
-### File Management
-
-Multer is used to handle file uploads and attachment storage securely.
+Administrators can permanently remove tasks from the system.
 
 ---
 
-## Security Considerations
+### File Attachments
 
-* Passwords are hashed using bcryptjs.
-* Protected routes require valid JWT tokens.
-* Role-based authorization restricts access to sensitive operations.
-* Environment variables are used to store confidential credentials.
-* Input validation is applied before database operations.
+The platform supports:
 
----
+* PDF files
+* Image files
+* Document files
 
-## Challenges Faced
-
-* Implementing role-based access control.
-* Managing file uploads and downloads.
-* Maintaining secure authentication workflows.
-* Synchronizing task assignments and status updates.
+Attachments can be uploaded during task creation or task updates and downloaded from the task details page.
 
 ---
 
-## Future Improvements
+### Dashboard
 
-* Real-time notifications using Socket.IO.
-* Email reminders for approaching deadlines.
-* Advanced search and filtering.
-* Activity logs and audit tracking.
-* Team collaboration features.
+The dashboard provides:
+
+* Total Tasks
+* To Do Tasks
+* In Progress Tasks
+* Completed Tasks
+* Deadline warnings for tasks due within the next three days
+
+
+---
+
+### Team Directory
+
+Admins can:
+
+* View all registered users
+* View all Asigned Tasks 
+* Access user profiles
+* Review assigned tasks
+* Monitor completion statistics
+* Dlete tasks
 
 ---
 
@@ -319,30 +340,50 @@ Multer is used to handle file uploads and attachment storage securely.
 
 ### Frontend Deployment (Vercel)
 
-1. Connect the frontend project to Vercel.
-2. Configure:
+1. Connect the frontend directory to Vercel.
+2. Configure the environment variable:
 
 ```env
-VITE_API_URL=https://your-backend-domain.com/api
+VITE_API_URL=https://your-backend-url.onrender.com/api
 ```
 
-3. Deploy.
+3. Deploy the application.
 
-### Backend Deployment (Render/Railway)
+---
 
-Configure:
+### Backend Deployment (Render)
+
+1. Connect the backend directory to Render.
+2. Configure the following environment variables:
 
 ```env
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+JWT_SECRET=your_jwt_secret
 UPLOAD_PATH=uploads
 PORT=5000
 ```
 
-Deploy the backend service.
+3. Deploy the backend service.
 
 ---
 
-## License
+## Production Notes
 
-This project was developed for educational and assessment purposes.
+For file downloads in production, attachment URLs must reference the deployed backend URL.
+
+Example:
+
+
+https://your-backend-url.com/uploads/file-name.pdf
+
+
+Update download links accordingly before deployment.
+
+
+Author
+
+ Zelalem ybabe
+
+GitHub: zola880
+
+Email: zelalemybabe77@gmail.com
