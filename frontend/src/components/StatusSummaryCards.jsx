@@ -3,12 +3,19 @@ import {
   LayoutDashboard,
   ListTodo,
   Timer,
-  CheckCircle2
+  CheckCircle2,
+  UserCheck
 } from 'lucide-react';
 import api from '../services/api';
 
-const StatusSummaryCards = ({ tasks: externalTasks }) => {
-  const [stats, setStats] = useState({ total: 0, todo: 0, inProgress: 0, completed: 0 });
+const StatusSummaryCards = ({ tasks: externalTasks, user, isAdmin }) => {
+  const [stats, setStats] = useState({
+    total: 0,
+    todo: 0,
+    inProgress: 0,
+    completed: 0,
+    assigned: 0
+  });
 
   useEffect(() => {
     const computeStats = (tasks) => {
@@ -16,7 +23,13 @@ const StatusSummaryCards = ({ tasks: externalTasks }) => {
       const todo = tasks.filter(t => t.status === 'To Do').length;
       const inProgress = tasks.filter(t => t.status === 'In Progress').length;
       const completed = tasks.filter(t => t.status === 'Completed').length;
-      setStats({ total, todo, inProgress, completed });
+
+      // Assigned: tasks the admin assigned to other members
+      const assigned = isAdmin && user
+        ? tasks.filter(t => t.assignedTo && t.assignedTo._id !== user._id).length
+        : 0;
+
+      setStats({ total, todo, inProgress, completed, assigned });
     };
 
     if (externalTasks && externalTasks.length !== undefined) {
@@ -33,7 +46,7 @@ const StatusSummaryCards = ({ tasks: externalTasks }) => {
       }
     };
     fetchTasks();
-  }, [externalTasks]);
+  }, [externalTasks, user, isAdmin]);
 
   return (
     <div className="stats-grid">
@@ -80,6 +93,19 @@ const StatusSummaryCards = ({ tasks: externalTasks }) => {
           <div className="stat-value">{stats.completed}</div>
         </div>
       </div>
+
+      {/* Assigned Tasks (Admin Only) */}
+      {isAdmin && (
+        <div className="stat-card stat-assigned">
+          <div className="stat-icon">
+            <UserCheck size={24} strokeWidth={2} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-label">Assigned Tasks</div>
+            <div className="stat-value">{stats.assigned}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
