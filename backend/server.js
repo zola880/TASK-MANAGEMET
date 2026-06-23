@@ -16,8 +16,8 @@ const app = express();
 // CORS configuration
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:5173',          // Vite default port
-  'https://task-managemet-two.vercel.app'  // Your deployed frontend
+  'http://localhost:5173',
+  'https://task-managemet-virid.vercel.app'   
 ];
 
 app.use(cors({
