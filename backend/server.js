@@ -13,16 +13,15 @@ connectDB();
 
 const app = express();
 
-// CORS configuration
+// CORS configuration for API
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  'https://task-managemet-virid.vercel.app'   
+  'https://task-managemet-virid.vercel.app'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, postman)
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -40,15 +39,19 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(uploadsDir));
+// Serve uploaded files WITH CORS headers
+app.use('/uploads', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static(uploadsDir));
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 
-// Global error handler for Multer errors and others
+// Global error handler
 app.use((err, req, res, next) => {
   if (err.message === 'Only images, PDF, DOC, DOCX, TXT files are allowed') {
     return res.status(400).json({ message: err.message });
