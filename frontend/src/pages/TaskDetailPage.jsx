@@ -63,11 +63,18 @@ const TaskDetailPage = () => {
 
   const clearFile = () => setFile(null);
 
+  // Build absolute download URL (works in production)
+  const getDownloadUrl = (filename) => {
+    const apiBase = import.meta.env.VITE_API_URL || '/api';
+    // Remove trailing "/api" to get the backend root
+    const backendRoot = apiBase.replace(/\/api\/?$/, '');
+    return `${backendRoot}/uploads/${filename}`;
+  };
+
   if (!task) return <div className="loading">Loading...</div>;
 
   const canUpdateStatus = isAdmin || task.assignedTo?._id === user._id;
 
-  // Get status icon
   const StatusIcon = task.status === 'Completed' ? CheckCircle2
     : task.status === 'In Progress' ? Clock
     : AlertCircle;
@@ -140,7 +147,7 @@ const TaskDetailPage = () => {
                 </span>
               </div>
               <a
-                href={`/uploads/${task.attachment.filename}`}
+                href={getDownloadUrl(task.attachment.filename)}
                 target="_blank"
                 rel="noreferrer"
                 className="btn btn-download"
@@ -154,7 +161,7 @@ const TaskDetailPage = () => {
           )}
         </div>
 
-        {/* Status update panel (only if user can update) */}
+        {/* Status update panel */}
         {canUpdateStatus && (
           <div className="detail-card update-panel">
             <h3 className="section-title">Update Task</h3>
@@ -173,7 +180,6 @@ const TaskDetailPage = () => {
                 </select>
               </div>
 
-              {/* Minimal file attachment area */}
               <div className="form-group">
                 <label>Attach File</label>
                 <div className="file-attach-row">
