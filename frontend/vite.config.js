@@ -9,5 +9,9 @@ export default defineConfig({
       '/api': 'http://localhost:5000',
       '/uploads': 'http://localhost:5000'
     }
+  },
+  // Add this for SPA fallback
+  preview: {
+    historyApiFallback: true
   }
 })
