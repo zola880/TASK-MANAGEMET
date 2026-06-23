@@ -10,7 +10,8 @@ import TaskListPage from './pages/TaskListPage';
 import TaskDetailPage from './pages/TaskDetailPage';
 import TaskFormPage from './pages/TaskFormPage';
 import UsersPage from './pages/UsersPage';
-import UserDetailPage from './pages/UserDetailPage';   // 👈 must be imported
+import UserDetailPage from './pages/UserDetailPage';
+import AssignedTasksPage from './pages/AssignedTasksPage';   // 👈 new import
 import './App.css';
 
 function App() {
@@ -46,10 +47,13 @@ function App() {
               <Route path="/users" element={
                 <AdminRoute><UsersPage /></AdminRoute>
               } />
-
-              {/* ✅ THIS IS THE MISSING ROUTE */}
               <Route path="/users/:userId" element={
                 <AdminRoute><UserDetailPage /></AdminRoute>
+              } />
+
+              {/* 👇 NEW: Admin Assigned Tasks page */}
+              <Route path="/assigned-tasks" element={
+                <AdminRoute><AssignedTasksPage /></AdminRoute>
               } />
 
               <Route path="*" element={<Navigate to="/dashboard" />} />
