@@ -5,6 +5,7 @@ import {
   ClipboardList,
   PlusSquare,
   Users,
+  UserCheck,
   LogOut
 } from 'lucide-react';
 
@@ -42,6 +43,10 @@ const Sidebar = ({ isOpen, onClose }) => {
           </NavLink>
           {isAdmin && (
             <>
+              <NavLink to="/assigned-tasks" className={linkClass} onClick={onClose}>
+                <UserCheck size={18} strokeWidth={2} />
+                Assigned Tasks
+              </NavLink>
               <NavLink to="/tasks/new" className={linkClass} onClick={onClose}>
                 <PlusSquare size={18} strokeWidth={2} />
                 Create Task
