@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import PageHeader from '../components/PageHeader';
 import StatusSummaryCards from '../components/StatusSummaryCards';
-import DeadlineApproaching from '../components/DeadlineApproaching';  // correct import
+import DeadlineApproaching from '../components/DeadlineApproaching';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const DashboardPage = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const DashboardPage = () => {
         title={`Welcome, ${user?.name}`}
         subtitle="Here's your task overview"
       />
-      <StatusSummaryCards tasks={tasks} />
+      <StatusSummaryCards tasks={tasks} user={user} isAdmin={isAdmin} />
       <DeadlineApproaching tasks={tasks} />
     </>
   );
