@@ -5,7 +5,7 @@ const {
   getTasks,
   getTasksByUser,
   getTaskById,
-  deleteTask          // 👈 import the new function
+  deleteTask        
 } = require('../controllers/taskController');
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
