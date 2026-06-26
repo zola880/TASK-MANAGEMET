@@ -33,25 +33,25 @@ const Sidebar = ({ isOpen, onClose }) => {
         </div>
 
         <nav className="sidebar-nav">
-          <NavLink to="/dashboard" className={linkClass} onClick={onClose}>
+          <NavLink to="/dashboard" className={linkClass} end onClick={onClose}>
             <LayoutDashboard size={18} strokeWidth={2} />
             Dashboard
           </NavLink>
-          <NavLink to="/tasks" className={linkClass} onClick={onClose}>
+          <NavLink to="/tasks" className={linkClass} end onClick={onClose}>
             <ClipboardList size={18} strokeWidth={2} />
             My Tasks
           </NavLink>
           {isAdmin && (
             <>
-              <NavLink to="/assigned-tasks" className={linkClass} onClick={onClose}>
+              <NavLink to="/assigned-tasks" className={linkClass} end onClick={onClose}>
                 <UserCheck size={18} strokeWidth={2} />
                 Assigned Tasks
               </NavLink>
-              <NavLink to="/tasks/new" className={linkClass} onClick={onClose}>
+              <NavLink to="/tasks/new" className={linkClass} end onClick={onClose}>
                 <PlusSquare size={18} strokeWidth={2} />
                 Create Task
               </NavLink>
-              <NavLink to="/users" className={linkClass} onClick={onClose}>
+              <NavLink to="/users" className={linkClass} end onClick={onClose}>
                 <Users size={18} strokeWidth={2} />
                 Team
               </NavLink>
