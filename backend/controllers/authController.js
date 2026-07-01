@@ -8,7 +8,7 @@ const generateToken = require('../utils/generateToken');
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, secretKey } = req.body;
+    const { name, email, password, secretKey, teamName } = req.body;
 
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
@@ -16,8 +16,8 @@ exports.register = async (req, res) => {
     let role = 'member';
     let teamId = null;
 
-    // If a secret key is provided, try to join that team
     if (secretKey) {
+      // Join existing team
       const team = await Team.findOne({ secretKey });
       if (!team) {
         return res.status(400).json({ message: 'Invalid team secret key' });
@@ -25,10 +25,10 @@ exports.register = async (req, res) => {
       teamId = team._id;
       role = 'member';
     } else {
-      // No secret key → create a new team and become admin
+      // Create new team – use provided teamName or fallback
       const newTeam = await Team.create({
-        name: `${name}'s Team`,
-        admin: null,  // will be set after user creation
+        name: teamName || `${name}'s Team`,
+        admin: null,
         secretKey: crypto.randomBytes(4).toString('hex').toUpperCase(),
         members: []
       });
@@ -49,7 +49,6 @@ exports.register = async (req, res) => {
       });
     }
 
-    // ✅ populate secretKey so the admin sees it in the sidebar
     const populatedUser = await User.findById(user._id).populate('team', 'name secretKey');
 
     res.status(201).json({
@@ -71,7 +70,6 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // ✅ populate secretKey so admin still sees it after re‑login
     const user = await User.findOne({ email }).populate('team', 'name secretKey');
     if (user && (await user.matchPassword(password))) {
       res.json({

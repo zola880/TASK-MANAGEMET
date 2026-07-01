@@ -8,7 +8,8 @@ const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secretKey, setSecretKey] = useState('');
-  const [mode, setMode] = useState('create'); // 'create' or 'join'
+  const [teamName, setTeamName] = useState('');   // 👈 new state
+  const [mode, setMode] = useState('create');    // 'create' or 'join'
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
@@ -19,8 +20,13 @@ const RegisterPage = () => {
     setError('');
     setLoading(true);
     try {
-      // If mode is 'create', don't send secretKey; if 'join', send it
-      await register(name, email, password, mode === 'join' ? secretKey.trim() : undefined);
+      await register(
+        name,
+        email,
+        password,
+        mode === 'join' ? secretKey.trim() : undefined,
+        mode === 'create' ? teamName.trim() : undefined   // 👈 pass team name
+      );
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -80,7 +86,19 @@ const RegisterPage = () => {
           disabled={loading}
         />
 
-        {/* Show secret key input only when joining */}
+        {/* Team name field – only for create mode */}
+        {mode === 'create' && (
+          <input
+            type="text"
+            placeholder="Team Name"
+            value={teamName}
+            onChange={(e) => setTeamName(e.target.value)}
+            required
+            disabled={loading}
+          />
+        )}
+
+        {/* Secret key – only for join mode */}
         {mode === 'join' && (
           <input
             type="text"
