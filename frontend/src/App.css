@@ -913,3 +913,55 @@ body {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+/* Sidebar team name */
+.sidebar-team-name {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+/* Secret key section */
+.sidebar-secret-key {
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--divider);
+  margin-top: auto;
+}
+
+.secret-key-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.secret-key-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.secret-key-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--bg);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: var(--primary);
+}
+
+.btn-copy-key {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.btn-copy-key:hover {
+  color: var(--primary);
+  background: var(--bg);
+}

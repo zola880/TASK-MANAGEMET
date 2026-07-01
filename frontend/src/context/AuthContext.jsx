@@ -27,8 +27,13 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  const register = async (name, email, password, role) => {
-    const { data } = await api.post('/auth/register', { name, email, password, role });
+  const register = async (name, email, password, secretKey) => {
+    const { data } = await api.post('/auth/register', {
+      name,
+      email,
+      password,
+      secretKey: secretKey || undefined   // undefined if empty, so backend creates a new team
+    });
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data));
     setUser(data);

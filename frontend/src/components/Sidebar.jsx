@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -6,12 +7,15 @@ import {
   PlusSquare,
   Users,
   UserCheck,
-  LogOut
+  LogOut,
+  Copy,
+  Check
 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -22,6 +26,14 @@ const Sidebar = ({ isOpen, onClose }) => {
   const linkClass = ({ isActive }) =>
     `sidebar-link ${isActive ? 'active' : ''}`;
 
+  const copySecretKey = () => {
+    if (user?.team?.secretKey) {
+      navigator.clipboard.writeText(user.team.secretKey);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <>
       {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
@@ -30,6 +42,9 @@ const Sidebar = ({ isOpen, onClose }) => {
           <NavLink to="/dashboard" className="sidebar-logo" onClick={onClose}>
             TaskFlow
           </NavLink>
+          {user?.team?.name && (
+            <p className="sidebar-team-name">{user.team.name}</p>
+          )}
         </div>
 
         <nav className="sidebar-nav">
@@ -58,6 +73,23 @@ const Sidebar = ({ isOpen, onClose }) => {
             </>
           )}
         </nav>
+
+        {/* Admin secret key section */}
+        {isAdmin && user?.team?.secretKey && (
+          <div className="sidebar-secret-key">
+            <p className="secret-key-label">Team Key</p>
+            <div className="secret-key-row">
+              <code className="secret-key-value">{user.team.secretKey}</code>
+              <button
+                className="btn-copy-key"
+                onClick={copySecretKey}
+                title="Copy secret key"
+              >
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="sidebar-footer">
           <div className="user-info">

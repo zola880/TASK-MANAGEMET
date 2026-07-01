@@ -7,6 +7,7 @@ const RegisterPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [secretKey, setSecretKey] = useState('');   
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
@@ -17,7 +18,8 @@ const RegisterPage = () => {
     setError('');
     setLoading(true);
     try {
-      await register(name, email, password, 'member');
+      // Pass secretKey (empty string if not provided)
+      await register(name, email, password, secretKey.trim() || undefined);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -53,6 +55,13 @@ const RegisterPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          disabled={loading}
+        />
+        <input
+          type="text"
+          placeholder="Team Secret Key (optional)"
+          value={secretKey}
+          onChange={(e) => setSecretKey(e.target.value)}
           disabled={loading}
         />
         <button type="submit" disabled={loading} className="btn btn-primary" style={{ opacity: loading ? 0.7 : 1 }}>

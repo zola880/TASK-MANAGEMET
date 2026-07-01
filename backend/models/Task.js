@@ -6,6 +6,7 @@ const taskSchema = new mongoose.Schema({
   priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Medium' },
   status: { type: String, enum: ['To Do', 'In Progress', 'Completed'], default: 'To Do' },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },   
   dueDate: { type: Date },
   attachment: {
     filename: String,

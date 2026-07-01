@@ -6,9 +6,16 @@ const Task = require('../models/Task');
 exports.createTask = async (req, res) => {
   try {
     const { title, description, priority, status, assignedTo, dueDate } = req.body;
-    const taskData = { title, description, priority, status, assignedTo, dueDate };
+    const taskData = {
+      title,
+      description,
+      priority,
+      status,
+      assignedTo,
+      dueDate,
+      team: req.user.team._id   // 👈 team scoping
+    };
 
-    // Add attachment metadata if file uploaded
     if (req.file) {
       taskData.attachment = {
         filename: req.file.filename,
@@ -34,7 +41,11 @@ exports.updateTask = async (req, res) => {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
-    // Admin can update any field
+    // Ensure task belongs to the user's team
+    if (task.team.toString() !== req.user.team._id.toString()) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
     if (req.user.role === 'admin') {
       const { title, description, priority, status, assignedTo, dueDate } = req.body;
       if (title) task.title = title;
@@ -44,7 +55,6 @@ exports.updateTask = async (req, res) => {
       if (assignedTo) task.assignedTo = assignedTo;
       if (dueDate) task.dueDate = dueDate;
 
-      // Update attachment if new file provided
       if (req.file) {
         task.attachment = {
           filename: req.file.filename,
@@ -54,16 +64,13 @@ exports.updateTask = async (req, res) => {
           size: req.file.size
         };
       }
-    } 
-    // Team member can update status and attachment of tasks assigned to them
-    else {
+    } else {
       if (task.assignedTo.toString() !== req.user._id.toString()) {
         return res.status(403).json({ message: 'Not authorized to update this task' });
       }
       const { status } = req.body;
       if (status) task.status = status;
 
-      // *** NEW: Allow team members to attach a file when updating status ***
       if (req.file) {
         task.attachment = {
           filename: req.file.filename,
@@ -82,14 +89,14 @@ exports.updateTask = async (req, res) => {
   }
 };
 
-// @desc    Get all tasks (Admin sees all, member sees only assigned)
+// @desc    Get all tasks (Admin sees all in team, member sees only assigned in team)
 // @route   GET /api/tasks
 // @access  Private
 exports.getTasks = async (req, res) => {
   try {
-    let filter = {};
+    let filter = { team: req.user.team._id };
     if (req.user.role !== 'admin') {
-      filter = { assignedTo: req.user._id };
+      filter.assignedTo = req.user._id;
     }
     const tasks = await Task.find(filter).populate('assignedTo', 'name email');
     res.json(tasks);
@@ -98,12 +105,15 @@ exports.getTasks = async (req, res) => {
   }
 };
 
-// @desc    Get tasks by assigned user (Admin)
+// @desc    Get tasks by assigned user (Admin, within team)
 // @route   GET /api/tasks/user/:userId
 // @access  Private/Admin
 exports.getTasksByUser = async (req, res) => {
   try {
-    const tasks = await Task.find({ assignedTo: req.params.userId }).populate('assignedTo', 'name email');
+    const tasks = await Task.find({
+      assignedTo: req.params.userId,
+      team: req.user.team._id
+    }).populate('assignedTo', 'name email');
     res.json(tasks);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -117,6 +127,12 @@ exports.getTaskById = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id).populate('assignedTo', 'name email');
     if (!task) return res.status(404).json({ message: 'Task not found' });
+
+    // Ensure task belongs to the user's team
+    if (task.team.toString() !== req.user.team._id.toString()) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
     if (req.user.role !== 'admin' && task.assignedTo._id.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized to view this task' });
     }
@@ -125,12 +141,20 @@ exports.getTaskById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Delete task (Admin only)
+// @route   DELETE /api/tasks/:id
+// @access  Private/Admin
 exports.deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
-    // Only admins can delete
+    // Ensure task belongs to the user's team
+    if (task.team.toString() !== req.user.team._id.toString()) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Not authorized to delete tasks' });
     }
