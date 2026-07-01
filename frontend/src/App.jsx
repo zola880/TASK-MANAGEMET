@@ -11,7 +11,7 @@ import TaskDetailPage from './pages/TaskDetailPage';
 import TaskFormPage from './pages/TaskFormPage';
 import UsersPage from './pages/UsersPage';
 import UserDetailPage from './pages/UserDetailPage';
-import AssignedTasksPage from './pages/AssignedTasksPage';   // 👈 new import
+import AssignedTasksPage from './pages/AssignedTasksPage';  
 import './App.css';
 
 function App() {
@@ -51,7 +51,7 @@ function App() {
                 <AdminRoute><UserDetailPage /></AdminRoute>
               } />
 
-              {/* 👇 NEW: Admin Assigned Tasks page */}
+              {/*Admin Assigned Tasks page */}
               <Route path="/assigned-tasks" element={
                 <AdminRoute><AssignedTasksPage /></AdminRoute>
               } />

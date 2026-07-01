@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
       const newTeam = await Team.create({
         name: `${name}'s Team`,
         admin: null,  // will be set after user creation
-        secretKey: crypto.randomBytes(4).toString('hex').toUpperCase(),  // e.g. "A3F2C1B0"
+        secretKey: crypto.randomBytes(4).toString('hex').toUpperCase(),
         members: []
       });
       teamId = newTeam._id;
@@ -38,20 +38,19 @@ exports.register = async (req, res) => {
 
     const user = await User.create({ name, email, password, role, team: teamId });
 
-    // If user is admin, update the team with the admin ID
     if (role === 'admin') {
       await Team.findByIdAndUpdate(teamId, {
         admin: user._id,
         $push: { members: user._id }
       });
     } else {
-      // Add member to the team
       await Team.findByIdAndUpdate(teamId, {
         $push: { members: user._id }
       });
     }
 
-    const populatedUser = await User.findById(user._id).populate('team', 'name');
+    // ✅ populate secretKey so the admin sees it in the sidebar
+    const populatedUser = await User.findById(user._id).populate('team', 'name secretKey');
 
     res.status(201).json({
       _id: populatedUser._id,
@@ -72,7 +71,8 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).populate('team', 'name');
+    // ✅ populate secretKey so admin still sees it after re‑login
+    const user = await User.findOne({ email }).populate('team', 'name secretKey');
     if (user && (await user.matchPassword(password))) {
       res.json({
         _id: user._id,
